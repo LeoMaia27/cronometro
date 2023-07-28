@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="background-color:cornflowerblue">
+    <h1>Cronômetro</h1>
+
+    <input type="text" id="stopWatch">
+
+    <button id="init">Iniciar</button>
+    <button id="pause">Pausar</button>
+    <button id="stop">Parar</button>
+
+    <script>
+
+        let textStopWatch = document.querySelector("#stopWatch");
+        let btnInit = document.querySelector("#init");
+        let btnPause = document.querySelector("#pause");
+        let btnStop = document.querySelector("#stop");
+
+        btnInit.addEventListener("click", init);
+        btnPause.addEventListener("click", pauseWatch);
+        btnStop.addEventListener("click", stopWatch);
+
+        let timeStampInit = 0;
+        let msClickPause = 0;
+        let msTempoDecorrido = 0;
+        let interval = null;
+        let stopWatchRunning = false;
+
+        function init() {
+            timeStampInit = Date.now();
+            initWatch();
+            stopWatchRunning = true;
+        }
+
+        function pauseWatch() {
+            if (stopWatchRunning) {
+                clearInterval(interval);
+                msClickPause = Date.now();
+                msTempoDecorrido += (msClickPause - timeStampInit);
+                stopWatchRunning = false;
+            }
+            else {
+                timeStampInit = Date.now();
+                initWatch(msTempoDecorrido);
+                stopWatchRunning = true;
+            }
+
+        }
+
+        function stopWatch() {
+
+        }
+
+        function initWatch(tempoDecorrido) {
+            let _ms = tempoDecorrido || 0;
+            interval = setInterval(function () {
+                let timeStampNow = Date.now();
+                let difference = timeStampNow - timeStampInit;
+                textStopWatch.value = formatNumber(difference + _ms);
+            }, 100);
+        }
+
+        function formatNumber(timeInMs) {
+            if (timeInMs < 1000) {
+                return timeInMs;
+            }
+            else if (timeInMs < 60000) {
+                let timeInSecond = parseInt(timeInMs / 1000);
+                let timeInHundredth = timeInMs - (timeInSecond * 1000);
+                return timeInSecond + ':' + timeInHundredth;
+            }
+            else{
+                let timeInMinute = parseInt(timeInMs / (60000));
+                let timeInSecond = parseInt(timeInMs / 1000 - (timeInMinute * 60));
+                let timeInHundredth = parseInt(timeInMs - (timeInSecond * 1000) - (timeInMinute * 60 * 1000));
+                return timeInMinute + ':' + timeInSecond + ':' + timeInHundredth;
+
+            }
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>
