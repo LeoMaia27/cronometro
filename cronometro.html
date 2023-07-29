@@ -34,28 +34,40 @@
         let stopWatchRunning = false;
 
         function init() {
+            if (stopWatchRunning) {
+                return;
+            }
+            stopWatch();
             timeStampInit = Date.now();
             initWatch();
             stopWatchRunning = true;
         }
 
         function pauseWatch() {
+
+            if(!textStopWatch.value) {
+                return;
+            }
+
             if (stopWatchRunning) {
                 clearInterval(interval);
                 msClickPause = Date.now();
                 msTempoDecorrido += (msClickPause - timeStampInit);
-                stopWatchRunning = false;
             }
             else {
                 timeStampInit = Date.now();
                 initWatch(msTempoDecorrido);
-                stopWatchRunning = true;
             }
-
+            stopWatchRunning = !stopWatchRunning; //se a variavel for true, recebe false, se for false, recebe true.
         }
 
         function stopWatch() {
-
+            stopWatchRunning = false;
+            timeStampInit = 0;
+            msTempoDecorrido = 0;
+            msClickPause = 0;
+            clearInterval(interval);
+            textStopWatch.value = '';
         }
 
         function initWatch(tempoDecorrido) {
@@ -68,16 +80,18 @@
         }
 
         function formatNumber(timeInMs) {
+            const oneMinute = 60 * 1000;
+
             if (timeInMs < 1000) {
                 return timeInMs;
             }
-            else if (timeInMs < 60000) {
+            else if (timeInMs < oneMinute) {
                 let timeInSecond = parseInt(timeInMs / 1000);
                 let timeInHundredth = timeInMs - (timeInSecond * 1000);
                 return timeInSecond + ':' + timeInHundredth;
             }
             else{
-                let timeInMinute = parseInt(timeInMs / (60000));
+                let timeInMinute = parseInt(timeInMs / (oneMinute));
                 let timeInSecond = parseInt(timeInMs / 1000 - (timeInMinute * 60));
                 let timeInHundredth = parseInt(timeInMs - (timeInSecond * 1000) - (timeInMinute * 60 * 1000));
                 return timeInMinute + ':' + timeInSecond + ':' + timeInHundredth;
